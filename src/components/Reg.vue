@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
+  <v-form>
     <v-text-field
       v-model="name"
       :counter="120"
@@ -123,8 +123,18 @@ export default {
   },
 
   methods: {
-    submit() {
+    async submit() {
       this.$v.$touch();
+      const formData = {
+        email: this.email,
+        password: this.password,
+        name: this.name
+      };
+      try {
+        await this.$store.dispatch("register", formData);
+      } catch (error) {
+        console.log("error");
+      }
     },
     clear() {
       this.$v.$reset();
