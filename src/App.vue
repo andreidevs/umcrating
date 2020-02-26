@@ -1,13 +1,13 @@
 <template>
   <v-app>
     <v-container>
-      <reg-form></reg-form>
+      <login></login>
     </v-container>
   </v-app>
 </template>
 
 <script>
-import RegForm from "@/components/Reg";
+import Login from "@/components/Login";
 
 export default {
   name: "App",
@@ -16,7 +16,7 @@ export default {
     //
   }),
   components: {
-    RegForm
+    Login
   }
 };
 </script>

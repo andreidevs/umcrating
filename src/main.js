@@ -7,6 +7,7 @@ import Vuelidate from "vuelidate";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import "firebase/firestore";
 Vue.use(Vuelidate);
 
 Vue.config.productionTip = false;

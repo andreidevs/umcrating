@@ -1,16 +1,15 @@
 <template>
   <v-form>
     <v-text-field
-      v-model="name"
-      :counter="120"
-      :error-messages="nameErrors"
-      label="Имя"
-      required
+      v-model="email"
+      :error-messages="emailErrors"
+      label="Email"
       clearable
+      required
       outlined
       shaped
-      @input="$v.name.$touch()"
-      @blur="$v.name.$touch()"
+      @input="$v.email.$touch()"
+      @blur="$v.email.$touch()"
     ></v-text-field>
 
     <v-text-field
@@ -29,88 +28,45 @@
       @blur="$v.password.$touch()"
     ></v-text-field>
 
-    <v-text-field
-      v-model="email"
-      :error-messages="emailErrors"
-      label="Email"
-      clearable
-      required
-      outlined
-      shaped
-      @input="$v.email.$touch()"
-      @blur="$v.email.$touch()"
-    ></v-text-field>
-
-    <v-checkbox
-      v-model="checkbox"
-      label="Согласен с правилами"
-      required
-      :error-messages="checkboxErrors"
-      @change="$v.checkbox.$touch()"
-      @blur="$v.checkbox.$touch()"
-    ></v-checkbox>
-
     <v-btn
       class="mr-4"
       @click="submit"
       :disabled="this.$v.$invalid"
       color="success"
     >
-      Зарегистрироваться
+      Войти
+    </v-btn>
+    <v-btn class="mr-4" @click="logout" color="warning">
+      Выйти
     </v-btn>
   </v-form>
 </template>
 
 <script>
 import { validationMixin } from "vuelidate";
-import {
-  required,
-  maxLength,
-  email,
-  minLength
-} from "vuelidate/lib/validators";
+import { required, email, minLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
 
   validations: {
-    name: { required, maxLength: maxLength(120) },
     email: { required, email },
-    password: { required, minLength: minLength(8) },
-    checkbox: {
-      checked(val) {
-        return val;
-      }
-    }
+    password: { required, minLength: minLength(8) }
   },
 
   data: () => ({
     showPassword: false,
-    name: "",
     email: "",
     password: "",
-    checkbox: false,
-    show1: false
+    show1: false,
+    alert: false
   }),
   computed: {
-    checkboxErrors() {
-      const errors = [];
-      if (!this.$v.checkbox.$dirty) return errors;
-      return errors;
-    },
     passErrors() {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.required && errors.push("Введите пароль");
       !this.$v.password.minLength &&
         errors.push("Пароль должен быть не меньше 8 символов");
-      return errors;
-    },
-    nameErrors() {
-      const errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.maxLength &&
-        errors.push("Имя должно быть не больше 50 символов");
-      !this.$v.name.required && errors.push("Заполните поле Имя");
       return errors;
     },
     emailErrors() {
@@ -127,14 +83,16 @@ export default {
       this.$v.$touch();
       const formData = {
         email: this.email,
-        password: this.password,
-        name
+        password: this.password
       };
       try {
-        await this.$store.dispatch("register", formData);
+        await this.$store.dispatch("login", formData);
       } catch (error) {
         console.log("error");
       }
+    },
+    async logout() {
+      await this.$store.dispatch("logout");
     }
   }
 };

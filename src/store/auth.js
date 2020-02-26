@@ -10,28 +10,29 @@ export default {
         throw e;
       }
     },
-    async register({ dispatch, commit }, { email, password, name }) {
-      try {
-        await firebase.auth().createUserWithEmailAndPassword(email, password);
-        const uid = await dispatch("getUid");
-        await firebase
-          .database()
-          .ref(`/users/${uid}/info`)
-          .set({
-            name
-          });
-      } catch (e) {
-        commit("setError", e);
-        throw e;
-      }
+    async register({ dispatch }, { email, password, name }) {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
+      const uid = await dispatch("getUid");
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .set({
+          name
+        })
+        .then(function() {
+          console.log("Sucsessful");
+        })
+        .catch(function(e) {
+          console.log(e);
+        });
     },
     getUid() {
       const user = firebase.auth().currentUser;
       return user ? user.uid : null;
     },
-    async logout({ commit }) {
+    async logout() {
       await firebase.auth().signOut();
-      commit("clearInfo");
     }
   }
 };
