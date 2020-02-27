@@ -39,13 +39,18 @@
     <v-btn class="mr-4" @click="logout" color="warning">
       Выйти
     </v-btn>
+    <noty :messages="notification" />
   </v-form>
 </template>
 
 <script>
 import { validationMixin } from "vuelidate";
 import { required, email, minLength } from "vuelidate/lib/validators";
+import Noty from "@/components/Noty";
 export default {
+  components: {
+    Noty
+  },
   mixins: [validationMixin],
 
   validations: {
@@ -58,15 +63,15 @@ export default {
     email: "",
     password: "",
     show1: false,
-    alert: false
+    alert: false,
+    notification: []
   }),
   computed: {
     passErrors() {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.required && errors.push("Введите пароль");
-      !this.$v.password.minLength &&
-        errors.push("Пароль должен быть не меньше 8 символов");
+      !this.$v.password.minLength && errors.push("");
       return errors;
     },
     emailErrors() {
@@ -87,12 +92,24 @@ export default {
       };
       try {
         await this.$store.dispatch("login", formData);
+        this.notification.unshift({
+          text: "Вы успешно вошли в аккаунт",
+          type: "success"
+        });
       } catch (error) {
+        this.notification.unshift({
+          text: "Ошибка входа в аккаунт",
+          type: "error"
+        });
         console.log("error");
       }
     },
     async logout() {
       await this.$store.dispatch("logout");
+      this.notification.unshift({
+        text: "Вы вышли из аккаунта",
+        type: "info"
+      });
     }
   }
 };
