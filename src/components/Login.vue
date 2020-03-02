@@ -33,12 +33,17 @@
       @click="submit"
       :disabled="this.$v.$invalid"
       color="success"
+      outlined
     >
+      <v-icon>mdi-login</v-icon>
       Войти
     </v-btn>
-    <v-btn class="mr-4" @click="logout" color="warning">
-      Выйти
-    </v-btn>
+    <router-link to="/restore">
+      <v-btn class="mr-4" outlined color="warning">
+        Забыли пароль?
+      </v-btn>
+    </router-link>
+
     <noty :messages="notification" />
   </v-form>
 </template>
