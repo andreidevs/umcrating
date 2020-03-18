@@ -106,7 +106,6 @@ export default {
           text: "Ошибка входа в аккаунт",
           type: "error"
         });
-        console.log("error");
       }
     },
     async logout() {

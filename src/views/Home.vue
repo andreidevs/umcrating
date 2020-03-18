@@ -1,5 +1,5 @@
 <template>
-  <v-vontainer fluid>
+  <v-vontainer>
     <v-row>
       <v-col>
         <h1 class="display-3 font-weight-black text-uppercase" width="10%">
