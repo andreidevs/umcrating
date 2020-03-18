@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
 import Noty from "@/components/Noty";
 import {
@@ -131,6 +132,9 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      SIGN_USER: "SIGN_USER"
+    }),
     async submit() {
       this.$v.$touch();
       const formData = {
@@ -139,15 +143,17 @@ export default {
         name
       };
       try {
-        await this.$store.dispatch("register", formData);
-        this.notification.unshift({
-          text: "Регистрация успешна",
-          type: "success"
+        await this.SIGN_USER(formData);
+        this.$notify({
+          group: "app",
+          type: "success",
+          text: "Вы успешно зарегистрировались"
         });
       } catch (error) {
-        this.notification.unshift({
-          text: "Ошибка регистрации",
-          type: "error"
+        this.$notify({
+          group: "app",
+          type: "success",
+          text: "Ошибка регистрации"
         });
       }
     }

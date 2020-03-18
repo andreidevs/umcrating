@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { validationMixin } from "vuelidate";
 import { required, email, minLength } from "vuelidate/lib/validators";
 import Noty from "@/components/Noty";
@@ -89,6 +90,10 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      LOGIN: "LOGIN_USER",
+      LOGOUT: "LOGOUT"
+    }),
     async submit() {
       this.$v.$touch();
       const formData = {
@@ -96,23 +101,26 @@ export default {
         password: this.password
       };
       try {
-        await this.$store.dispatch("login", formData);
-        this.notification.unshift({
-          text: "Вы успешно вошли в аккаунт",
-          type: "success"
+        await this.LOGIN(formData);
+        this.$notify({
+          group: "app",
+          type: "success",
+          text: "Вы успешно вошли в аккаунт"
         });
       } catch (error) {
-        this.notification.unshift({
-          text: "Ошибка входа в аккаунт",
-          type: "error"
+        this.$notify({
+          group: "app",
+          type: "error",
+          text: "Ошибка входа в аккаунт"
         });
       }
     },
     async logout() {
-      await this.$store.dispatch("logout");
-      this.notification.unshift({
-        text: "Вы вышли из аккаунта",
-        type: "info"
+      await this.LOGOUT();
+      this.$notify({
+        group: "app",
+        type: "info",
+        text: "Вы вышли из аккаунта"
       });
     }
   }

@@ -1,8 +1,19 @@
 import firebase from "firebase/app";
 
 export default {
+  state: {
+    uid: null
+  },
+  getters: {
+    STATE: state => state
+  },
+  mutations: {
+    SET_UID(state, data) {
+      state.uid = data;
+    }
+  },
   actions: {
-    async login({ commit }, { email, password }) {
+    async LOGIN_USER({ commit }, { email, password }) {
       try {
         await firebase.auth().signInWithEmailAndPassword(email, password);
       } catch (e) {
@@ -10,9 +21,9 @@ export default {
         throw e;
       }
     },
-    async register({ dispatch }, { email, password, name }) {
+    async SIGN_USER({ dispatch }, { email, password, name }) {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
-      const uid = await dispatch("getUid");
+      const uid = await dispatch("GET_UID");
       await firebase
         .firestore()
         .collection("users")
@@ -27,11 +38,11 @@ export default {
           console.log(e);
         });
     },
-    getUid() {
-      const user = firebase.auth().currentUser;
-      return user ? user.uid : null;
+    GET_UID() {
+      const data = firebase.auth().currentUser;
+      return data ? data.uid : null;
     },
-    async logout() {
+    async LOGOUT() {
       await firebase.auth().signOut();
     }
   }
